@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<title>Chat</title>
+	<style type="text/css">
+		#chat {
+			height: 300px;
+		}
+	</style>
+</head>
+<body>
+<div id="chat"></div>
+
+<form id="send-message">
+	<input type="text" id="message">
+	<input type="submit">
+</form>
+
+<!--<script src="js/jquery-3.1.1.min.js"></script>-->
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+	$(function() {
+		var socket = io.connect();
+		var $messageform 	= $("#send-message");
+		var $messageBox  	= $("#message");
+		var $chat 		 	= $("#chat");
+
+		//Mandar mensajes
+		$messageform.submit(function(e) {
+			e.preventDefault();
+			socket.emit('send message', $messageBox.val());
+			$messageBox.val('');
+		});
+
+		//Recibir lo que el servidor esta mandando
+		socket.on('new message', function(data) {
+			$chat.append(data+"<br>");
+		});
+	});
+</script>
+</body>
+</html>
